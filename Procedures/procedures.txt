@@ -1,0 +1,31 @@
+DELIMITER //
+create procedure check_stock(IN quantity int, IN stock int)
+BEGIN
+if quantity > stock
+then SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Insufficient Stock';
+end if;
+end//
+DELIMITER ;
+
+DELIMITER //
+create procedure reduce_stock(IN quantity int, IN p_id int)
+BEGIN
+update product set stock = (select * from (select stock from product where product_id = p_id) as stck) - quantity;
+end//
+DELIMITER ;
+
+DELIMITER //
+create procedure check_if_user_coupon(IN c1 int, IN c2 int)
+BEGIN
+if (select count(*) from customer_coupon where customer_id = c1 and coupon_id = 2) = 0 
+then SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No such coupon';
+endif//
+end//
+DELIMITER ;
+
+DELIMITER //
+create procedure use_up_coupon(IN c1 int, IN c2 int)
+BEGIN
+delete from Customer_Coupon where customer_id = c1 and coupon_id = c2;
+end//
+DELIMITER ; 
