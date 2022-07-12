@@ -1,0 +1,159 @@
+--CUSTOMER--
+
+create table Account(
+	account_id int PRIMARY KEY,
+	email varchar(30) NOT NULL UNIQUE,
+	password varchar(30) NOT NULL
+	)
+
+create table Customer(
+	customer_id int PRIMARY KEY,
+	account_id int UNIQUE,
+	first_name varchar(30) NOT NULL,
+	last_name varchar(30),
+	age int,
+	phone_number varchar(15),
+	house_number varchar(20),
+	street varchar(40),
+	city varchar(20),
+	state varchar(20),
+	country varchar(20),
+	cart_cost numeric(8,2) DEFAULT 0,
+
+	FOREIGN KEY (account_id) REFERENCES Account(account_id) ON DELETE CASCADE,
+	CHECK (age >= 13)
+	)
+
+create table Supplier(
+	supplier_id int PRIMARY KEY,
+	account_id int UNIQUE,
+	first_name varchar(30) NOT NULL,
+	last_name varchar(30),
+	age int,
+	phone_number varchar(15) NOT NULL,
+	house_number varchar(20) NOT NULL,
+	street varchar(40) NOT NULL,
+	city varchar(20) NOT NULL,
+	state varchar(20) NOT NULL,
+	country varchar(20) NOT NULL,
+
+	FOREIGN KEY (account_id) REFERENCES Account(account_id) ON DELETE CASCADE,
+	CHECK (age>=18)
+	)
+
+create table Category(
+	category_id int PRIMARY KEY,
+	name varchar(30)
+	)
+
+create table Product(
+	product_id int PRIMARY KEY,
+	name varchar(30) NOT NULL,
+	stock int NOT NULL,
+	price numeric(8,2) NOT NULL,
+	category_id int ,
+
+	FOREIGN KEY (category_id) REFERENCES Category(category_id)
+	)
+
+create table Delivery_Partner(
+	delivery_partner_id int PRIMARY KEY,
+	account_id int UNIQUE NOT NULL,
+	first_name varchar(30) NOT NULL,
+	last_name varchar(30),
+	age int,
+	phone_number varchar(15) NOT NULL,
+	house_number varchar(20) NOT NULL,
+	street varchar(40) NOT NULL,
+	city varchar(20) NOT NULL,
+	state varchar(20) NOT NULL,
+	country varchar(20) NOT NULL,
+
+	FOREIGN KEY (account_id) REFERENCES Account(account_id) ON DELETE CASCADE,
+	CHECK (age>=18)
+	)
+
+
+create table Supplies(
+	supplier_id int NOT NULL,
+	product_id int NOT NULL,
+
+	FOREIGN KEY (supplier_id) REFERENCES Supplier(supplier_id) ON DELETE CASCADE,
+	FOREIGN KEY (product_id) REFERENCES Product(product_id) ON DELETE CASCADE
+	)
+
+create table Rating(
+	product_id int NOT NULL,
+	customer_id int NOT NULL,
+	rating int NOT NULL,
+
+
+	FOREIGN KEY (product_id) REFERENCES Product(product_id) ON DELETE CASCADE,
+	FOREIGN KEY (customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE,
+	CHECK (rating BETWEEN 1 and 11)
+	)
+
+
+create table Complaints(
+	product_id int NOT NULL,
+	customer_id int NOT NULL,
+	complaint_text text NOT NULL,
+
+
+	FOREIGN KEY (product_id) REFERENCES Product(product_id) ON DELETE CASCADE,
+	FOREIGN KEY (customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE
+	)
+
+create table Coupon(
+	coupon_id int PRIMARY KEY,
+	coupon_text varchar(20),
+	valid_upto date,
+	pct_discount int NOT NULL,
+
+	CHECK (pct_discount BETWEEN 1 and 100)
+	)
+
+create table Customer_Coupon(
+
+	customer_id int NOT NULL,
+	coupon_id int NOT NULL,
+
+	FOREIGN KEY (customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE,
+	FOREIGN KEY (coupon_id) REFERENCES Coupon(coupon_id) ON DELETE CASCADE
+)
+
+create table Cart(
+	product_id int NOT NULL,
+	customer_id int NOT NULL,
+	quantity int NOT NULL,
+
+	FOREIGN KEY (product_id) REFERENCES Product(product_id) ON DELETE CASCADE,
+	FOREIGN KEY (customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE,
+	CHECK (quantity>0)
+
+)
+
+create table Orders(
+	customer_id int NOT NULL,
+	product_id int NOT NULL,
+	delivery_partner_id int NOT NULL, 
+	quantity int NOT NULL,
+	order_date date NOT NULL,
+	coupon_id int,
+	status varchar(20) NOT NULL,
+
+	FOREIGN KEY (customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE,
+	FOREIGN KEY (product_id) REFERENCES Product(product_id) ON DELETE CASCADE,
+	FOREIGN KEY (delivery_partner_id) REFERENCES Delivery_Partner(delivery_partner_id) ON DELETE CASCADE,
+	FOREIGN KEY (coupon_id) REFERENCES Coupon(coupon_id) ON DELETE CASCADE,
+	CHECK (quantity>0)
+	)
+
+
+create view Customer_Details as
+select a.email_address as email_address, c.first_name as first_name,
+c.last_name as last_name, c.age as age, c.cart_cost as cart_cost
+from Account as a, Customer as c
+where a.account_id = c.account_id
+
+
