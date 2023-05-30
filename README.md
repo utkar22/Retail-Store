@@ -66,3 +66,6 @@ Triggers are database objects that execute automatically in response to specific
 - `coupon_exists_with_user`: Validates if a customer has a specific coupon before placing an order.
 - `coupon_order`: Removes the coupon from the customer's list after it has been used in an order.
 
+## Data Population
+
+The data population process in this project involves generating random data and inserting it into various tables in the MySQL database. Python code is used to create functions for each table, which generate random values for different fields such as names, addresses, phone numbers, and dates. These functions are then called to populate the tables with the randomly generated data, ensuring a diverse and realistic dataset for testing and demonstration purposes.
