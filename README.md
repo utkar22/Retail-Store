@@ -69,3 +69,21 @@ Triggers are database objects that execute automatically in response to specific
 ## Data Population
 
 The data population process in this project involves generating random data and inserting it into various tables in the MySQL database. Python code is used to create functions for each table, which generate random values for different fields such as names, addresses, phone numbers, and dates. These functions are then called to populate the tables with the randomly generated data, ensuring a diverse and realistic dataset for testing and demonstration purposes.
+
+## Views
+
+Views are pre-defined queries that provide specific information to different user roles:
+
+- **Customer_Details**: Displays account details for customers.
+- **Product_Details**: Shows all products for suppliers/customers.
+- **ProductComplaints**: Allows customer care to view complaints and associated customer information.
+- **Order_Details**: Provides delivery partners with order details they are delivering.
+- **View_Customer_Order_Delivery_Partner**: Shows the details that customers can view regarding their orders and the assigned delivery partner.
+- **Basic_Product_Details**: Displays basic product information.
+
+## Grants
+
+Grants define the access privileges granted to different users:
+
+- The user 'supplier' has insert access on the 'supplies' table.
+- The user 'customer_care' has insert access on the 'Complaints' and 'Ratings' tables. Additionally, the 'customer_care' user has view access on the 'Complaints' and 'Ratings' tables, but insert access on these tables has been revoked.
